@@ -19,7 +19,7 @@
 
 #include <xc.h> // include standard header file
 
-#include "ds18b20.h"
+#include "ds18b20.c"
 
 // set Config bits
 #pragma config FOSC=INTOSC, PLLEN=OFF, WDTE=OFF, MCLRE=ON,
@@ -58,9 +58,7 @@ void main ( )
     TRISAbits.TRISA4 = 0;	// RA4 = nc
     TRISAbits.TRISA5 = 0;	// RA5 = nc
     
-        
-
-    
+         
     while(0)
     {
         __delay_ms(100);
@@ -75,7 +73,7 @@ void main ( )
 	while ( 1 )
 	{
 		//Start conversion (without ROM matching)
-		//ds18b20convert( &PORTA, &TRISA, &PORTA, ( 1 << 0 ), NULL );
+		ds18b20convert( &PORTA, &TRISA, &PORTA, ( 1 << 0 ), NULL );
 
 		//Delay (sensor needs time to perform conversion)
 		__delay_ms( 1000 );
