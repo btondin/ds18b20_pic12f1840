@@ -14,7 +14,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>source/RELETERM.c</itemPath>
-      <itemPath>head_and_lib/ds18b20.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -34,7 +33,7 @@
         <targetDevice>PIC12F1840</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
         <languageToolchainVersion>2.10</languageToolchainVersion>
         <platform>3</platform>

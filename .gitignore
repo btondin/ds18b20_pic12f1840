@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 #Other
-*.pdf
+
 
 # MPLAB X Manual suggested
 *.d
