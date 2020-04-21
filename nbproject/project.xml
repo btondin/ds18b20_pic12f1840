@@ -13,8 +13,8 @@
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>source</sourceRootElem>
                 <sourceRootElem>head_and_lib</sourceRootElem>
+                <sourceRootElem>source</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

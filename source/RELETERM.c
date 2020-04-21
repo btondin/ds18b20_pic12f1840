@@ -19,7 +19,7 @@
 
 #include <xc.h> // include standard header file
 
-//#include "ds18b20.h"
+#include "ds18b20.h"
 
 // set Config bits
 #pragma config FOSC=INTOSC, PLLEN=OFF, WDTE=OFF, MCLRE=ON,
@@ -69,6 +69,22 @@ void main ( )
         LED = 0;
         
     }
+    
+    int temp;
+
+	while ( 1 )
+	{
+		//Start conversion (without ROM matching)
+		ds18b20convert( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
+
+		//Delay (sensor needs time to perform conversion)
+		_delay_ms( 1000 );
+
+		//Read temperature (without ROM matching)
+		ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL, &temp );
+
+		//Somehow use data stored in `temp` variable
+	}
     
 
 
