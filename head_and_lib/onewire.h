@@ -19,7 +19,7 @@ extern "C"
 {
 #endif
 
-#include <inttypes.h>
+#include <stdint.h>                      
 
 #define ONEWIRE_ERROR_OK 	0 //! Communication success
 #define ONEWIRE_ERROR_COMM 	1 //! Communication failure

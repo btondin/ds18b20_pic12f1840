@@ -14,7 +14,8 @@
 #ifndef DS18B20_H
 #define DS18B20_H
 
-#include <inttypes.h>
+//#include <inttypes.h>
+#include <stdint.h>
 #include "onewire.h"
 
 #define DS18B20_ERROR_OK       0 //!< Communication with sensor succesful

@@ -61,7 +61,7 @@ void main ( )
         
 
     
-    while(1)
+    while(0)
     {
         __delay_ms(100);
         LED = 1;
@@ -75,13 +75,14 @@ void main ( )
 	while ( 1 )
 	{
 		//Start conversion (without ROM matching)
-		ds18b20convert( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL );
+		//ds18b20convert( &PORTA, &TRISA, &PORTA, ( 1 << 0 ), NULL );
 
 		//Delay (sensor needs time to perform conversion)
-		_delay_ms( 1000 );
+		__delay_ms( 1000 );
+        LED = !LED;
 
 		//Read temperature (without ROM matching)
-		ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL, &temp );
+		//ds18b20read( &PORTB, &DDRB, &PINB, ( 1 << 0 ), NULL, &temp );
 
 		//Somehow use data stored in `temp` variable
 	}
