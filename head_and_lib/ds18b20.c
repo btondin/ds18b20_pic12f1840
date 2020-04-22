@@ -8,7 +8,7 @@
 ////  ds18b20_init()                                                   ////
 ////     Init the module and the driver.                               ////
 ////                                                                   ////
-////  int1 = ds18b20_read(signed int16 *pTemp)                         ////
+////  __bit = ds18b20_read(signed short *pTemp)                        ////
 ////     Reads temperature from device and saves read value to pTemp   ////
 ////     pointer.  Returns TRUE if we succesfully talked to the device ////
 ////     and pTemp was updated; returns FALSE if there was an error    ////
@@ -22,12 +22,12 @@
 ////     The temperature returned is degrees C, but fractional;        ////
 ////     divide by 16 to get the integer numerator.                    ////
 ////                                                                   ////
-//// int1 ds18b20_start_conversion(void)                               ////
+//// __bit ds18b20_start_conversion(void)                              ////
 ////     This starts a temperature conversion on the DS18B20.          ////
 ////     Returns TRUE if communication was successful, FALSE if there  ////
 ////     was something wrong with the bus or the device.               ////
 ////                                                                   ////
-//// int1 ds18b20_get_conversion(signed int16 *pTemp)                  ////
+//// __bit ds18b20_get_conversion(signed short *pTemp)                 ////
 ////     After a conversion is started, you can either wait for Tconv  ////
 ////     (which is 750ms for max resolution conversion) or poll        ////
 ////     the bus with ds18b20_read_bit() (if it returns non-zero       ////
@@ -56,8 +56,16 @@
 
 /// begin config //////////////////////////////////////////////////////////
 
+#include <stdint.h>
+#include "CCS_to_XC8.c"
+
+
 #ifndef PIN_DS18B20_DATA
-#define PIN_DS18B20_DATA PIN_B5
+#define PIN_DS18B20_DATA PORTAbits.RA4
+#endif
+
+#ifndef PIN_DS18B20_TRIS
+#define PIN_DS18B20_TRIS TRISAbits.RA4
 #endif
 
 /// end config ////////////////////////////////////////////////////////////
@@ -65,7 +73,8 @@
 
 void ds18b20_init(void)
 {
-   output_float(PIN_DS18B20_DATA);
+   //output_float(PIN_DS18B20_DATA);
+   PIN_DS18B20_TRIS = 1; //Set as input
 }
 
 /*
@@ -73,43 +82,62 @@ This method will initialize the DS18B20 for transactions to occur
 PARAMS: none
 RETURNS: TRUE if start pulse response read from unit
 */
-int1 ds18b20_start(void)
+__bit ds18b20_start(void)
 {
-   int1 ret = FALSE;
+   __bit ret = FALSE;
    
-   output_low(PIN_DS18B20_DATA);
-   delay_us(500);
-   output_float(PIN_DS18B20_DATA);
-   delay_us(70);//wait to read the SLAVES response
-   if (!input(PIN_DS18B20_DATA))
+   //output_low(PIN_DS18B20_DATA);
+   PIN_DS18B20_TRIS = 0; //Set as output
+   PIN_DS18B20_DATA = 0;
+   
+   __delay_us(500);
+   //output_float(PIN_DS18B20_DATA);
+   PIN_DS18B20_TRIS = 1; //Set as input
+   
+   
+   __delay_us(70);//wait to read the SLAVES response
+   //if (!input(PIN_DS18B20_DATA))
+   if (!PIN_DS18B20_DATA)
+       
+       
    {
       ret = TRUE;
-      delay_us(430);
+      __delay_us(430);
    }
    return(ret);
 }
 /*
 This method will write a bit to the DS18B20 following write time slots
-PARAMS: int1 value to write
+PARAMS: __bit value to write
 RETURNS: none
 */
-void ds18b20_write(int1 value)
+void ds18b20_write(__bit value)
 {
-   output_low(PIN_DS18B20_DATA);//drives output low for master
-   delay_us(2);//delays for 2us
-   output_bit(PIN_DS18B20_DATA,value);//sets MASTER to input mode to release pin
-   delay_us(60);
-   output_float(PIN_DS18B20_DATA);//sets MASTER to input mode to release pin
-   delay_us(2);//delays for 2 microseconds which is within 15us max
+   //output_low(PIN_DS18B20_DATA);//drives output low for master
+   PIN_DS18B20_TRIS = 0; //Set as output
+   PIN_DS18B20_DATA = 0;
+   
+   
+   __delay_us(2);//delays for 2us
+   //output_bit(PIN_DS18B20_DATA,value);//sets MASTER to input mode to release pin
+   PIN_DS18B20_TRIS = 0; //Set as output
+   PIN_DS18B20_DATA = value;
+   
+   
+   __delay_us(60);
+   //output_float(PIN_DS18B20_DATA);//sets MASTER to input mode to release pin
+   PIN_DS18B20_TRIS = 1; //Set as input
+   
+   __delay_us(2);//delays for 2 microseconds which is within 15us max
 }
 /*
 This method will call write() for each bit of a byte to be sent
 PARAMS: BYTE value to write
 RETURNS: none
 */
-void ds18b20_write_byte(unsigned int8 value)
+void ds18b20_write_byte(unsigned char value)
 {
-   unsigned int8 i;
+   unsigned char i;
    for(i=1;i<=8;++i)
    {
       ds18b20_write(shift_right(&value,1,0));
@@ -120,15 +148,24 @@ This method will read a value from the DS18B20 following the read time slots
 PARAMS: none
 RETURNS: A bit from the DS1993
 */
-int1 ds18b20_read_bit(void)
+__bit ds18b20_read_bit(void)
 {
-   int1 value;
-   output_low(PIN_DS18B20_DATA);//drives output low for master
-   delay_us(2);
-   output_float(PIN_DS18B20_DATA);//sets MASTER to input mode to release pin
-   delay_us(8);//waits to read
-   value=input(PIN_DS18B20_DATA);
-   delay_us(120);
+   __bit value;
+   //output_low(PIN_DS18B20_DATA);//drives output low for master
+   PIN_DS18B20_TRIS = 0; //Set as output
+   PIN_DS18B20_DATA = 0;
+   
+   
+   __delay_us(2);
+   //output_float(PIN_DS18B20_DATA);//sets MASTER to input mode to release pin
+   PIN_DS18B20_TRIS = 1; //Set as input
+   
+   
+   __delay_us(8);//waits to read
+   //value=input(PIN_DS18B20_DATA);
+   value = PIN_DS18B20_DATA;
+   
+   __delay_us(120);
    return value;
 }
 /*
@@ -136,9 +173,9 @@ This method will call read() and update a byte bit by bit
 PARAMS: none
 RETURNS: A byte from the DS1993
 */
-unsigned int8 ds18b20_read_byte()
+unsigned char ds18b20_read_byte()
 {
-   unsigned int8 i, value;
+   unsigned char i, value;
    
    for(i=0; i<8; i++)
    {
@@ -147,7 +184,7 @@ unsigned int8 ds18b20_read_byte()
    return value;
 }
 
-int1 ds18b20_start_conversion(void)
+__bit ds18b20_start_conversion(void)
 {
    if (!ds18b20_start())
       return(FALSE);
@@ -156,12 +193,12 @@ int1 ds18b20_start_conversion(void)
    return(TRUE);
 }
 
-int1 ds18b20_get_conversion(signed int16 *pTemp)
+__bit ds18b20_get_conversion(signed short *pTemp)
 {
    union 
    {
-      unsigned int8 b[2];
-      signed int16 w;
+      unsigned char b[2];
+      signed short w;
    } ret;
    
    if (!ds18b20_start())
@@ -177,7 +214,7 @@ int1 ds18b20_get_conversion(signed int16 *pTemp)
    return(TRUE);
 }
 
-int1 ds18b20_read(signed int16 *pTemp)
+__bit ds18b20_read(signed short *pTemp)
 {
    if (!ds18b20_start_conversion())
       return(FALSE);
@@ -195,13 +232,13 @@ PARAMS: pTemp - where temperature is stored if valid read
 RETURNS: TRUE if ds18b20 is on bus and acting properly
 */
 /*
-int1 ds18b20_read(signed int16 *pTemp)
+__bit ds18b20_read(signed short *pTemp)
 {
-   unsigned int8 busy = 0;
+   unsigned char busy = 0;
    union 
    {
-      unsigned int8 b[2];
-      signed int16 w;
+      unsigned char b[2];
+      signed short w;
    } ret;
    
    if (!ds18b20_start())
