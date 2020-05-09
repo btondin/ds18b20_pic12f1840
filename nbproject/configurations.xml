@@ -18,7 +18,6 @@
                    displayName="Important Files"
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
-      <itemPath>head_and_lib/ds18b20.c</itemPath>
       <itemPath>head_and_lib/CCS_to_XC8.c</itemPath>
     </logicalFolder>
   </logicalFolder>

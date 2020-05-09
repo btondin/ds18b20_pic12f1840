@@ -19,7 +19,8 @@
 
 #include <xc.h> // include standard header file
 
-#include "ds18b20.c"
+
+
 
 // set Config bits
 #pragma config FOSC=INTOSC, PLLEN=OFF, WDTE=OFF, MCLRE=ON,
@@ -28,6 +29,8 @@
 
 // Definitions
 #define _XTAL_FREQ  16000000        // this is used by the __delay_ms(xx) and __delay_us(xx) functions
+
+#include "ds18b20.c"
 
 #define LED PORTAbits.RA2
 
@@ -59,7 +62,7 @@ void main ( )
     TRISAbits.TRISA5 = 0;	// RA5 = nc
     
          
-    while(0)
+    while(1)
     {
         __delay_ms(100);
         LED = 1;
@@ -73,7 +76,7 @@ void main ( )
 	while ( 1 )
 	{
 		//Start conversion (without ROM matching)
-		ds18b20convert( &PORTA, &TRISA, &PORTA, ( 1 << 0 ), NULL );
+		//ds18b20convert( &PORTA, &TRISA, &PORTA, ( 1 << 0 ), NULL );
 
 		//Delay (sensor needs time to perform conversion)
 		__delay_ms( 1000 );
